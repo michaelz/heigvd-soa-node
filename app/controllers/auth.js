@@ -4,7 +4,8 @@ var express = require('express'),
     authentication = require('../services/authentication'),
     crypto = require('crypto'),
     base64url = require('base64url'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    User = mongoose.model('User');
 var secret;
 
 require('express-jsend');
@@ -14,15 +15,7 @@ module.exports = function (app) {
     secret = app.settings.secret;
 };
 
-router.post('/', function (req, res, next) {
-
-  var username = req.body.username;
-  var password = req.body.password;
-
-  // validation // TODO: With database
-  if (username != 'blap' && password != 'blip') {
-      res.jerror('Authentication failed');
-  }
+router.post('/', authentication.findUser, authentication.checkPassword, function (req, res, next) {
 
 // JWT Generation
 
@@ -31,9 +24,10 @@ router.post('/', function (req, res, next) {
       "typ": "JWT"
   }
   var payload = {
-      "username": username,
-      "password": password
-      // TODO: Add id to key.
+      "id": req.user.id,
+      "username": req.user.username
+
+      // TODO: Add id to key with expiration
   }
   // TODO: Export token generation to another file (token generate & token verify)
   // Create a key per user, and in the token (payload), an link to an id to that key.
@@ -48,7 +42,6 @@ router.post('/', function (req, res, next) {
               base64url(signature);
 
   res.jsend(token);
-
 });
 
 /**
