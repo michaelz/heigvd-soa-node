@@ -1,0 +1,9 @@
+<script type="text/javascript" charset="utf-8">
+    webix.ui({"id": "main"});
+    webix.ajax("/api/ui/{{pageid}}", function(text, data, XmlHttpRequest){
+        webix.ui(data.json(), $$("main"));
+        {{#if has_partial}}
+        {{> (lookup . 'pageid') }}
+        {{/if}}
+    });
+</script>

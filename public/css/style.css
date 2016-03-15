@@ -4,3 +4,6 @@ body {
 
 a {
   color: #00B7FF; }
+
+.webix-view {
+  margin: 0 auto; }

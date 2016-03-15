@@ -32,6 +32,12 @@ module.exports.verifyToken = function (req, res, next) {
     var header = token[0];
     var payload = token[1];
     var reqSig =  token[2];
+
+    // Testing the expiration date
+    if (payload.exp > Date.now()) {
+        res.jerror('Authorization token fail');
+    }
+
     // the below should be in a dedicated function.
     var genSig = base64url(
           crypto.createHmac('sha256', config.secret)

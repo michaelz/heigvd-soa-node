@@ -25,9 +25,8 @@ router.post('/', authentication.findUser, authentication.checkPassword, function
   }
   var payload = {
       "id": req.user.id,
-      "username": req.user.username
-
-      // TODO: Add id to key with expiration
+      "username": req.user.username,
+      "exp": Date.now() + 20*1000*60
   }
   // TODO: Export token generation to another file (token generate & token verify)
   // Create a key per user, and in the token (payload), an link to an id to that key.
