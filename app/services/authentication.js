@@ -6,49 +6,55 @@ var crypto = require('crypto'),
 
 
 /*
- * Middleware / check token with secret key
- * TODO: Check expiration
-  * TODO: Export the decrypt to another file
+ * Checks the validity of the token
+ * Returns the payload if valid, false if not.
  */
-
-module.exports.verifyToken = function (req, res, next) {
-    var token;
-    if ( !req.get('Authorization')) {
-        if (!req.query.token) {
-            res.jerror('missing auth token');
-            return;
-        }
-        token = req.query.token.split('.');
-    } else {
-        token = req.get('Authorization').split('.');
-    }
-
-
+function verifyToken(token) {
     if (token.length != 3) {
-        res.jerror('Authorization token fail');
-        return;
+        console.log('verifytoken: wrong format');
+        return false;
     }
-
     var header = token[0];
     var payload = token[1];
     var reqSig =  token[2];
 
     // Testing the expiration date
     if (payload.exp > Date.now()) {
-        res.jerror('Authorization token fail');
+        console.log('verifytoken: expired');
+        return false;
     }
-
-    // the below should be in a dedicated function.
     var genSig = base64url(
           crypto.createHmac('sha256', config.secret)
               .update(header + "." + payload)
               .digest('bin')
           );
     if (reqSig != genSig) { // TODO: Check avec CHabloz pour voir comment comparer les hash mieux
-        res.jerror('Authorization token fail');
+        console.log('verifytoken: signature mismatch');
+        return false;
+    }
+    return payload;
+}
+
+/**
+ * Middleware that redirects a user to a login page if the
+ * sent authentication token is invalid (or non are found).
+ */
+module.exports.needsLogin = function (req, res, next) {
+    if ( !req.get('Authorization')) {
+        if (!req.query.token) {
+            res.jerror('no token');
+            return;
+        }
+        token = req.query.token.split('.');
+    } else {
+        token = req.get('Authorization').split('.');
+    }
+    if (!verifyToken(token)) {
+        res.jerror('token fail');
         return;
     }
-    req.body = payload;
+    req.payload = verifyToken(token);
+
     next();
 }
 

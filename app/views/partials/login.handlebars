@@ -1,6 +1,6 @@
-
     // Logic login stuff
     $$("login").attachEvent("onItemClick", function (){
+        var dest = getParameterByName('dest');
         $.post( "/auth", {
              username: $$("username").getValue(),
              password: $$("password").getValue()
@@ -8,5 +8,6 @@
             token = data.data;
             // Store the token :
             localStorage.setItem('woa-token',token);
-        });
+            window.location.replace('/'+dest);
+        }).fail(manageJsendError());
     });

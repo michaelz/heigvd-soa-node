@@ -17,8 +17,7 @@ module.exports = function (app) {
 
 router.post('/', authentication.findUser, authentication.checkPassword, function (req, res, next) {
 
-// JWT Generation
-
+  // JWT Generation
   var header = {
       "alg": "HS256",
       "typ": "JWT"
@@ -47,8 +46,8 @@ router.post('/', authentication.findUser, authentication.checkPassword, function
  * Returns the user name
  * Needs a auth token, either with an auth query in the url or in the header (Authorization)
  */
-router.get('/user', authentication.verifyToken, function(req, res, next) {
-    var userPayload = base64url.decode(req.body);
+router.get('/user', authentication.needsLogin, function(req, res, next) {
+    var userPayload = base64url.decode(req.payload);
     var data = JSON.parse(userPayload);
     res.jsend(data.username);
 });

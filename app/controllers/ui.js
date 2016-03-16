@@ -1,6 +1,9 @@
 var express = require('express'),
     router = express.Router(),
-    mongoose = require('mongoose');
+    base64url = require('base64url'),
+    authentication = require('../services/authentication'),
+    mongoose = require('mongoose'),
+    User = mongoose.model('User');
 
 module.exports = function (app) {
       app.use('/api/ui/', router);
@@ -9,23 +12,18 @@ module.exports = function (app) {
 /*
  * Send tree view
  */
-router.get('/bookmarks', function (req, res, next) {
-    res.send({
-        view:"tree",
-        select:true,
-        data: [
-            {id:"root", value:"Cars", open:true, data:[
-                { id:"1", open:true, value:"Toyota", data:[
-                    { id:"1.1", value:"Avalon" },
-                    { id:"1.2", value:"Corolla" },
-                    { id:"1.3", value:"Camry" }
-                ]},
-                { id:"2", value:"Skoda", open:true, data:[
-                    { id:"2.1", value:"Octavia" },
-                    { id:"2.2", value:"Superb" }
-                ]}
-            ]}
-        ]
+router.get('/bookmarks',authentication.needsLogin, function (req, res, next) {
+    var payload = JSON.parse(base64url.decode(req.payload));
+    var user;
+    User.findById(payload.id, function (err, user) {
+        if (err) {
+            res.jerror("user not found");
+        }
+        res.send({
+            view:"tree",
+            select:true,
+            data: user.bookmarks
+        });
     });
 });
 

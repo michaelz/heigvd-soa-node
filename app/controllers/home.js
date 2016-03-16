@@ -1,5 +1,6 @@
 var express = require('express'),
     router = express.Router(),
+    authentication = require('../services/authentication'),
     mongoose = require('mongoose');
 
 module.exports = function (app) {
@@ -29,6 +30,6 @@ router.get('/login', function (req, res, next) {
 router.get('/bookmarks', function (req, res, next) {
     res.render('webix', {
         title: 'My Bookmarks',
-        pageid: 'bookmarks',
+        pageid: 'bookmarks'
     });
 });
