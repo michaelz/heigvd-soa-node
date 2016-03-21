@@ -17,8 +17,7 @@
   </head>
   <script>
 $(document).ready(function(){
-
-    var socket = io.connect('http://127.0.0.1:3001');
+    var socket = io.connect('http://localhost:3001');
     $('form').submit(function(){
       socket.emit('newtask', $('#m').val());
       $('#m').val('');
@@ -30,7 +29,6 @@ $(document).ready(function(){
 });
     </script>
   <body>
-
     <ul id="messages"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>

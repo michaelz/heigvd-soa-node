@@ -1,6 +1,6 @@
 var express = require('express'),
     router = express.Router(),
-    authentication = require('../services/authentication'),
+    authentication = require('../middlewares/authMiddleware'),
     http = require('http').Server(express),
     io = require('socket.io')(http),
     mongoose = require('mongoose');

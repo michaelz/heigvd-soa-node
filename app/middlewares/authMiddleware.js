@@ -1,39 +1,10 @@
 var crypto = require('crypto'),
     base64url = require('base64url'),
     config = require('../../config/config'), // to access the secret key
+    authUtils = require('../utils/authUtils.js'),
     mongoose = require('mongoose'),
     User = mongoose.model('User');
 
-
-/*
- * Checks the validity of the token
- * Returns the payload if valid, false if not.
- */
-function verifyToken(token) {
-    if (token.length != 3) {
-        console.log('verifytoken: wrong format');
-        return false;
-    }
-    var header = token[0];
-    var payload = token[1];
-    var reqSig =  token[2];
-
-    // Testing the expiration date
-    if (payload.exp > Date.now()) {
-        console.log('verifytoken: expired');
-        return false;
-    }
-    var genSig = base64url(
-          crypto.createHmac('sha256', config.secret)
-              .update(header + "." + payload)
-              .digest('bin')
-          );
-    if (reqSig != genSig) { // TODO: Check avec CHabloz pour voir comment comparer les hash mieux
-        console.log('verifytoken: signature mismatch');
-        return false;
-    }
-    return payload;
-}
 
 /**
  * Middleware that redirects a user to a login page if the
@@ -49,11 +20,11 @@ module.exports.needsLogin = function (req, res, next) {
     } else {
         token = req.get('Authorization').split('.');
     }
-    if (!verifyToken(token)) {
+    if (!authUtils.verifyToken(token)) {
         res.jerror('token fail');
         return;
     }
-    req.payload = verifyToken(token);
+    req.payload = authUtils.verifyToken(token);
 
     next();
 }

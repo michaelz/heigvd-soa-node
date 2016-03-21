@@ -1,7 +1,7 @@
 var express = require('express'),
     router = express.Router(),
     base64url = require('base64url'),
-    authentication = require('../services/authentication'),
+    authentication = require('../middlewares/authMiddleware'),
     mongoose = require('mongoose'),
     User = mongoose.model('User');
 

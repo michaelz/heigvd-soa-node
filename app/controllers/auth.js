@@ -1,7 +1,7 @@
 var express = require('express'),
     router = express.Router(),
     config = require('../../config/config'),
-    authentication = require('../services/authentication'),
+    authentication = require('../middlewares/authMiddleware'),
     crypto = require('crypto'),
     base64url = require('base64url'),
     mongoose = require('mongoose'),
