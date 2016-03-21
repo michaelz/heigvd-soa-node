@@ -16,17 +16,17 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
   </head>
   <script>
-$(document).ready(function(){
-    var socket = io.connect('http://localhost:3001');
-    $('form').submit(function(){
-      socket.emit('newtask', $('#m').val());
-      $('#m').val('');
-      return false;
+    $(document).ready(function(){
+        var socket = io.connect('http://localhost:3001');
+        $('form').submit(function(){
+          socket.emit('newtask', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+        socket.on('newtask', function(taskdesc){
+            $('#messages').append($('<li>').text(taskdesc));
+        });
     });
-    socket.on('newtask', function(taskdesc){
-        $('#messages').append($('<li>').text(taskdesc));
-    });
-});
     </script>
   <body>
     <ul id="messages"></ul>

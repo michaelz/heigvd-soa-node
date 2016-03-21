@@ -1,0 +1,13 @@
+var socket = io.connect('http://localhost:3001');
+$('body').append('<ul id="messages"></ul>');
+$$("send").attachEvent("onItemClick", function (){
+
+    console.log('clicked');
+    socket.emit('newtask', $('.taskDesc input').val());
+    $('.taskDesc input').val('');
+    return false;
+});
+
+socket.on('newtask', function(taskdesc){
+    $('#messages').append($('<li>').text(taskdesc));
+});

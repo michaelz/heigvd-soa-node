@@ -1,7 +1,7 @@
 var crypto = require('crypto'),
     base64url = require('base64url'),
     config = require('../../config/config'), // to access the secret key
-    authUtils = require('../utils/authUtils.js'),
+    authUtils = require('../utils/authUtils'),
     mongoose = require('mongoose'),
     User = mongoose.model('User');
 
@@ -11,8 +11,10 @@ var crypto = require('crypto'),
  * sent authentication token is invalid (or non are found).
  */
 module.exports.needsLogin = function (req, res, next) {
-    if ( !req.get('Authorization')) {
+    if ( req.get('Authorization') == 'null') {
+        console.log('Didn\'t get Authorization header');
         if (!req.query.token) {
+            console.log('Didn\'t get token through query in url');
             res.jerror('no token');
             return;
         }
@@ -20,12 +22,12 @@ module.exports.needsLogin = function (req, res, next) {
     } else {
         token = req.get('Authorization').split('.');
     }
+    console.log(authUtils.verifyToken(token));
     if (!authUtils.verifyToken(token)) {
         res.jerror('token fail');
         return;
     }
     req.payload = authUtils.verifyToken(token);
-
     next();
 }
 

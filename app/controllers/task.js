@@ -10,8 +10,11 @@ module.exports = function (app) {
 };
 
 router.get('/', function(req, res){
-    res.render('task-example', {
-      title: 'Welcome !'
+    res.render('webix', {
+      title: 'Websocket Task list',
+      pageid: 'tasks',
+      has_partial: true,
+      has_websocket: true
     });
 });
 
@@ -19,6 +22,7 @@ io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('newtask', function(taskdesc){
     io.emit('newtask', taskdesc);
+    //TODO: save task in database
   });
   socket.on('disconnect', function(){
     console.log('user disconnected');
