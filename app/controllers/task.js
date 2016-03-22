@@ -90,12 +90,13 @@ router.delete('/:id', authMiddleware.needsLogin, function (req, res, next) {
 
 
 io.on('connection', function(socket) {
-   // TODO: Check token to authentify user. Send elements only to users with valid token.
+   // TODO: Check token to authentify user.
+   // Send elements only to users with valid token.
 
   //console.log('a user connected');
   /*
   socket.on('newtask', function(taskdesc) {
-    io.emit('newtask', taskdesc); // TODO: essayer sans
+    io.emit('newtask', taskdesc);
   });
 
   socket.on('deltask', function(taskId) {

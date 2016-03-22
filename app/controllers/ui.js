@@ -91,6 +91,4 @@ router.get('/tasks',authMiddleware.needsLogin, function (req, res, next) {
 
         res.send(response);
     });
-
-
 });

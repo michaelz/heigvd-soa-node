@@ -1,14 +1,18 @@
 var express = require('express'),
     router = express.Router(),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    bullshit = require('../utils/bullshit');
 
 module.exports = function (app) {
   app.use('/', router);
 };
 
 router.get('/', function (req, res, next) {
+    bullshit.initializeSentencePool();
+
+    var phrase = bullshit.generateSentences(1);
     res.render('index', {
-      title: 'Welcome !',
+      title: phrase,
       pageid: 'home'
     });
 });
