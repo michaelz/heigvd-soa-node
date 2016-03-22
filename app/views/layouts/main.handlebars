@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width">
   <title>{{title }}</title>
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css">
+  <link rel="stylesheet" href="http://cdn.webix.com/edge/skins/material.css" type="text/css">
+
   <script src="http://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
   {{#if has_websocket}}
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
@@ -24,10 +25,25 @@
     });
 </script>
 {{/if}}
+
 <body class="page-{{pageid}}">
-    <p>
-        <a href="/"><span class="webix_icon fa-home"></span></a> | <a href="/bookmarks">Bookmarks</a> | <a href="/tasks">Tasks</a>
-    </p>
+    <script>
+    $(document).ready(function() {
+        if (localStorage.getItem('woa-token')) {
+            $('#logout').show();
+            $('#logout').click(function() {
+                localStorage.removeItem('woa-token'); // remove token
+                location.reload();
+
+            });
+        } else {
+            $('#logout').hide();
+        }
+    });
+    </script>
+    <nav class="menu">
+        <div><a href="/"><span class="webix_icon fa-home"></span></a> <a href="/bookmarks">Bookmarks</a> <a href="/tasks">Tasks</a> <a style="display:none" href="#" id="logout"><span class="webix_icon fa-sign-out"></span></a></div>
+    </nav>
     <div id="main-container">
   {{{body}}}
     </div>

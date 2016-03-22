@@ -1,22 +1,31 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
 a {
   color: #00B7FF;
 }
 
-.webix-view {
-    margin: 0 auto;
+body {
+    margin:0;
 }
-
-
-.page-tasks {
-    form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-    form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-    form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-    #messages { list-style-type: none; margin: 0; padding: 0; }
-    #messages li { padding: 5px 10px; }
-    #messages li:nth-child(odd) { background: #eee; }
+#main-container,.webix_view {
+    margin:0 auto;
+}
+#main-container {
+    width: 50%;
+    min-width: 300px;
+}
+nav.menu {
+    margin: 0 0 1em 0;
+    padding: 0.4em;
+    background: #333;
+    text-align:center;
+    a {
+        display:inline-block;
+        padding: 0.5em;
+        text-align:center;
+        text-decoration:none;
+        color: #e0e0e0;
+        margin: 0 2em;
+    }
+    a:hover {
+        color: #fff;
+    }
 }

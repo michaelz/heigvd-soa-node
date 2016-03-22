@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:3001');
+var socket = io.connect('http://10.192.112.127:3001');
 $$("send").attachEvent("onItemClick", function (){
     var descriptionValue = $('.taskDesc input').val();
     $.ajax({
@@ -27,7 +27,7 @@ $$("dtable").attachEvent("onItemClick", function(id, e) {
             },
             dataType: 'json',
             success: function (data) {
-                console.log('Deleted item '+id.row);
+                // console.log('Deleted item '+id.row);
             }
         });
     }

@@ -1,13 +1,7 @@
 <script type="text/javascript" charset="utf-8">
     {{> uilogic}}
-
     var token = localStorage.getItem('woa-token');
-    // send the authorization token. Doesn't work because we use handlebars and backend routes, not ajax calls to load our pages.
-    /*$( document ).ajaxSend(function( event, jqxhr, settings ) {
-        jqxhr.setRequestHeader("Authorization", token);
-        console.log('token: '+token);
-    });*/
-    console.log('token: '+token);
+
     webix.ui({"id": "main", "container": "main-container"});
     webix.ajax()
         .headers({

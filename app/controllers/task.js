@@ -40,7 +40,8 @@ router.post('/', authMiddleware.needsLogin, function(req, res) {
 
         var socketTask = {
             "description": createdTask.description,
-            "username": username
+            "username": username,
+            "_id": createdTask._id
         }
         io.sockets.emit('newtask', socketTask);
         res.jsend(socketTask);
@@ -89,9 +90,12 @@ router.delete('/:id', authMiddleware.needsLogin, function (req, res, next) {
 
 
 io.on('connection', function(socket) {
+   // TODO: Check token to authentify user. Send elements only to users with valid token.
+
   //console.log('a user connected');
+  /*
   socket.on('newtask', function(taskdesc) {
-    io.emit('newtask', taskdesc);
+    io.emit('newtask', taskdesc); // TODO: essayer sans
   });
 
   socket.on('deltask', function(taskId) {
@@ -100,7 +104,7 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function() {
     //console.log('user disconnected');
-  });
+});*/
 });
 
 // Websocket port (3000 is used for http, so 3001)
