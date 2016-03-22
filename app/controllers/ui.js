@@ -50,30 +50,31 @@ router.get('/login', function(req,res,next) {
 router.get('/tasks',authMiddleware.needsLogin, function (req, res, next) {
     var payload = JSON.parse(base64url.decode(req.payload));
     var user;
+    var delicon = "<span style='color:red; cursor:pointer' class='delbtn webix_icon fa-remove'></span>";
+    // TODO: Would be cool to have a status "TODO, WIP, DONE"
     var response = {
         rows:[
             {
                 view:"datatable",
+                id:"dtable",
         		columns:[
-        			{ id:"taskDesc",   header:"Task Description",    width:400 },
-        			{ id:"user",    header:"User" , width:160 }
+                    { id:"user",    header:"User" , width:150, sort:'string' },
+                    { id:"taskDesc",   header:"Task Description",    width:450, sort:'string' },
+                    { id:"delete", header:"",width:30, template:delicon}
         		],
         		autowidth:true,
         		autoheight:true,
-        		data:[
-        			{ id:1, taskDesc:"My first task",  user:"michael"},
-        			{ id:2, taskDesc:"My second task", user:"john"}
-        		]
+        		url: '/tasks/all'
             },
             {
-                // <input id="m" autocomplete="off" /><button>Send</button>
                 view:"form",
                 id:"send_form",
                 autowidth: true,
                 elements:[
-                    { view:"text", type:"text", label:"Task Description", name: 'taskDesc', css:'taskDesc', id:'taskDesc'},
-                    { margin:5, cols:[
-                        { view:"button", value:"Send" , type:"form", id: "send", css:"send" }
+
+                    { margin:2, cols:[
+                        { view:"text", type:"text", placeholder:"Enter new task description...", name: 'taskDesc', css:'taskDesc', id:'taskDesc'},
+                        { view:"button", value:"Send" , type:"form", id: "send", css:"send", width: 60 }
                     ]}
                 ]
             }
@@ -85,6 +86,7 @@ router.get('/tasks',authMiddleware.needsLogin, function (req, res, next) {
         if (err) {
             res.jerror("user not found");
         }
+
         res.send(response);
     });
 

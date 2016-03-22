@@ -1,13 +1,46 @@
 var socket = io.connect('http://localhost:3001');
-$('body').append('<ul id="messages"></ul>');
 $$("send").attachEvent("onItemClick", function (){
-
-    console.log('clicked');
-    socket.emit('newtask', $('.taskDesc input').val());
-    $('.taskDesc input').val('');
-    return false;
+    var descriptionValue = $('.taskDesc input').val();
+    $.ajax({
+        url: '/tasks',
+        type: 'post',
+        data: {
+            description: descriptionValue
+        },
+        headers: {
+            Authorization: token
+        },
+        dataType: 'json',
+        success: function (data) {
+            $('.taskDesc input').val('');
+        }
+    });
 });
 
-socket.on('newtask', function(taskdesc){
-    $('#messages').append($('<li>').text(taskdesc));
+$$("dtable").attachEvent("onItemClick", function(id, e) {
+    if ($(e.target).hasClass('delbtn')) {
+        $.ajax({
+            url: '/tasks/'+id.row,
+            type: 'delete',
+            headers: {
+                Authorization:token
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log('Deleted item '+id.row);
+            }
+        });
+    }
 });
+
+socket.on('newtask', function(task){
+    $$('dtable').add({
+        id: task._id,
+        taskDesc: task.description,
+        user: task.username
+    });
+});
+
+socket.on('deltask', function(taskId){
+    $$('dtable').remove(taskId);
+})

@@ -1,6 +1,5 @@
 var express = require('express'),
     router = express.Router(),
-    authentication = require('../middlewares/authMiddleware'),
     mongoose = require('mongoose');
 
 module.exports = function (app) {

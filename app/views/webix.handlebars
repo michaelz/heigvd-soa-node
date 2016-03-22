@@ -8,7 +8,7 @@
         console.log('token: '+token);
     });*/
     console.log('token: '+token);
-    webix.ui({"id": "main"});
+    webix.ui({"id": "main", "container": "main-container"});
     webix.ajax()
         .headers({
             'Authorization': token
