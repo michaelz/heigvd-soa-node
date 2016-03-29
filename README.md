@@ -13,3 +13,17 @@ To add test content to the paragraphs, go to [/api/paragraphs/setup](http://loca
 
 - `api/..` paths are used for json content.
 - `api/ui/..` are used for webix layouts (also in json format).
+
+
+### Adding users
+
+Use the following API route to create new users: [/api/users](http://localhost:3000/api/users/).
+
+The POST format is the following:
+
+```
+{
+    "username":"myUsername",
+    "password":"myPassword"
+}
+```
