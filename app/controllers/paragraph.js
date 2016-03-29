@@ -39,18 +39,41 @@ router.get('/setup', function(req, res){
 /**
  * Get all Paragraphs
  */
-router.get('/', function (req, res, next) {
+router.get('/data/', function (req, res, next) {
     if (req.query.search) {
         var q = req.query.search;
-        res.jsend(q);
-        // TODO: Indexing files
+        Paragraph.find(
+                { $text : { $search : q } },
+                { score : { $meta: "textScore" } }
+            )
+            .sort({ score : { $meta : 'textScore' } })
+            .exec(function(err, results) {
+                res.jsend(results);
+            });
     } else {
-        Paragraph.find(function (err, paras) {
+        Paragraph.find(function (err, results) {
             if (err) {
                 res.jerror(err);
                 return;
             }
-            res.jsend(paras);
+            res.jsend(results);
         })
     }
+});
+
+/*
+ * Front end view
+ */
+router.get('/', function (req, res, next) {
+    var pid;
+    if(req.query.search) {
+        console.log(req.query.search);
+        pid = 'search?q=' + req.query.search;
+    } else {
+        pid = 'search';
+    }
+    res.render('webix', {
+      title: 'Search paragraphs',
+      pageid: pid
+    });
 });

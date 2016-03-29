@@ -94,7 +94,7 @@ io.on('connection', function(socket) {
    // Send elements only to users with valid token.
 
   //console.log('a user connected');
-  /*
+
   socket.on('newtask', function(taskdesc) {
     io.emit('newtask', taskdesc);
   });
@@ -105,7 +105,7 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function() {
     //console.log('user disconnected');
-});*/
+  });
 });
 
 // Websocket port (3000 is used for http, so 3001)

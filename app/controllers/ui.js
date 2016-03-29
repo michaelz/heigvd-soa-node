@@ -92,3 +92,54 @@ router.get('/tasks',authMiddleware.needsLogin, function (req, res, next) {
         res.send(response);
     });
 });
+
+
+router.get('/search', function(req, res, next) {
+    var response = {
+        view:"list",
+        sizeToContent:true,
+        autowidth:true,
+        height:800,
+        type:{
+            height:"auto"
+        },
+        pager: {
+            size:15,
+            group: 10,
+            container: 'main-container'
+        },
+        tooltip:{
+            template:"by <em>#author#</em>"
+        },
+        template: "<h3 style='font-size:1.2em;line-height:1.4; margin:0'>#title#</h3><p style='font-size: 0.9em;line-height:1.3em'>#text#</p>",
+        //fillspace:true,
+        id:"search",
+        url: '/paragraphs/data'
+    };
+    if (req.query.q) {
+        console.log('searched');
+        response.url = '/paragraphs/data?search=' + req.query.q;
+        response.title = 'Searching for <em>' + req.query.search + '</em>';
+    };
+    res.send(response);
+});
+
+/*
+view:"list",
+sizeToContent:true,
+pager: {
+    size:15,
+    group: 10,
+    container: 'main-container'
+},
+tooltip:{
+    template:"by <em>#author#</em>"
+},
+autowidth:true,
+fixedRowHeight:false,  rowLineHeight:25, rowHeight:25,
+template: "first row <br /> second",
+autoheight:true,
+fillspace:true,
+id:"search",
+url: '/paragraphs/data'
+*/

@@ -8,4 +8,7 @@ var ParagraphSchema = new Schema({
   author: String
 });
 
+ParagraphSchema.index({ title: 'text', text: 'text'});
+
+
 mongoose.model('Paragraph', ParagraphSchema);

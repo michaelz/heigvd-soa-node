@@ -3,11 +3,12 @@
     var token = localStorage.getItem('woa-token');
 
     webix.ui({"id": "main", "container": "main-container"});
+
     webix.ajax()
         .headers({
             'Authorization': token
         })
-        .get("/api/ui/{{pageid}}", function(text, data, XmlHttpRequest){
+        .get("/api/ui/{{{pageid}}}", function(text, data, XmlHttpRequest){
             if (data.json().status == 'error') {
                 window.location.replace('/login?dest={{pageid}}');
             }
