@@ -81,14 +81,15 @@ router.delete('/:id', authMiddleware.needsLogin, function (req, res, next) {
     });
 });
 
-// TODO: uncomment and make the authorization handshake work.
+// TODO: Would be nice to have a separate file with all the websocket logic.
+// TODO 2: uncomment and make the authorization handshake work.
 /*io.set('authorization', socketioJwt.authorize({
     secret: config.secret,
     handshake: true
 }));*/
 
 io.on('connection', function(socket) {
-
+  console.log('a user connected');
   socket.on('newtask', function(taskdesc) {
     io.emit('newtask', taskdesc);
   });
