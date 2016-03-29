@@ -1,12 +1,13 @@
 var express = require('express'),
     router = express.Router(),
     bullshit = require('../utils/bullshit'),
+    helpers = require('../utils/helpers'),
     casual = require('casual'),
     mongoose = require('mongoose'),
     Paragraph = mongoose.model('Paragraph');
 
 module.exports = function (app) {
-  app.use('/paragraphs/', router);
+  app.use('/api/paragraphs/', router);
 };
 
 /**
@@ -39,7 +40,7 @@ router.get('/setup', function(req, res){
 /**
  * Get all Paragraphs
  */
-router.get('/data/', function (req, res, next) {
+router.get('/', function (req, res, next) {
     if (req.query.search) {
         var q = req.query.search;
         Paragraph.find(
@@ -48,7 +49,18 @@ router.get('/data/', function (req, res, next) {
             )
             .sort({ score : { $meta : 'textScore' } })
             .exec(function(err, results) {
-                res.jsend(results);
+                // TODO: Regex the result to emphasize the searched words.
+                var data = new Array(results.length);
+                for (var i = 0; i < results.length; i++) {
+                    data[i] = {
+                        _id: results[i]._id,
+                        shorttext : helpers.textTrimmer(results[i].text,120),
+                        text: results[i].text,
+                        title: results[i].title,
+                        author: results[i].author
+                    };
+                }
+                res.jsend(data);
             });
     } else {
         Paragraph.find(function (err, results) {
@@ -56,24 +68,17 @@ router.get('/data/', function (req, res, next) {
                 res.jerror(err);
                 return;
             }
-            res.jsend(results);
+            var data = new Array(results.length);
+            for (var i = 0; i < results.length; i++) {
+                data[i] = {
+                    _id: results[i]._id,
+                    shorttext : helpers.textTrimmer(results[i].text,120),
+                    text: results[i].text,
+                    title: results[i].title,
+                    author: results[i].author
+                };
+            }
+            res.jsend(data);
         })
     }
-});
-
-/*
- * Front end view
- */
-router.get('/', function (req, res, next) {
-    var pid;
-    if(req.query.search) {
-        console.log(req.query.search);
-        pid = 'search?q=' + req.query.search;
-    } else {
-        pid = 'search';
-    }
-    res.render('webix', {
-      title: 'Search paragraphs',
-      pageid: pid
-    });
 });

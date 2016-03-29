@@ -3,7 +3,7 @@ var socket = io.connect('http://localhost:3001');
 $$("send").attachEvent("onItemClick", function (){
     var descriptionValue = $('.taskDesc input').val();
     $.ajax({
-        url: '/tasks',
+        url: '/api/tasks',
         type: 'post',
         data: {
             description: descriptionValue
@@ -14,7 +14,6 @@ $$("send").attachEvent("onItemClick", function (){
         dataType: 'json',
         success: function (data) {
             $('.taskDesc input').val('');
-            console.log(data);
         }
     });
 });
@@ -22,14 +21,13 @@ $$("send").attachEvent("onItemClick", function (){
 $$("dtable").attachEvent("onItemClick", function(id, e) {
     if ($(e.target).hasClass('delbtn')) {
         $.ajax({
-            url: '/tasks/'+id.row,
+            url: '/api/tasks/'+id.row,
             type: 'delete',
             headers: {
                 Authorization:token
             },
             dataType: 'json',
             success: function (data) {
-                // console.log('Deleted item '+id.row);
             }
         });
     }

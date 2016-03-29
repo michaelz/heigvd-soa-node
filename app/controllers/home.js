@@ -7,12 +7,16 @@ module.exports = function (app) {
   app.use('/', router);
 };
 
+/**
+ * Renders Home page template with random phrase
+ */
 router.get('/', function (req, res, next) {
     bullshit.initializeSentencePool();
 
-    var phrase = bullshit.generateSentences(1);
+    var phrase = bullshit.generateSentences(2);
     res.render('index', {
-      title: phrase,
+      title: 'Welcome',
+      quote: phrase,
       pageid: 'home'
     });
 });
@@ -24,7 +28,7 @@ router.get('/login', function (req, res, next) {
     res.render('webix', {
       title: 'Login',
       pageid: 'login',
-      has_partial: true // partial will be login.handlebars in partials folder
+      partial: 'login'
     });
 });
 
@@ -37,3 +41,34 @@ router.get('/bookmarks', function (req, res, next) {
         pageid: 'bookmarks'
     });
 });
+
+
+/**
+ * Render tasks
+ */
+
+router.get('/tasks', function(req, res){
+    res.render('webix', {
+      title: 'Websocket Task list',
+      pageid: 'tasks',
+      partial: 'tasks',
+      has_websocket: true
+    });
+});
+
+/**
+ * Render Search page
+ */
+ router.get('/paragraphs/', function (req, res, next) {
+     var pid;
+     if(req.query.search) {
+         pid = 'search?q=' + req.query.search;
+     } else {
+         pid = 'search';
+     }
+     res.render('webix', {
+       title: 'Search paragraphs',
+       pageid: pid,
+       partial: 'paragraphs'
+     });
+ });

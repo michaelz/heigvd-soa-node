@@ -6,7 +6,7 @@ var express = require('express'),
 
 
 module.exports = function (app) {
-    app.use('/user/', router);
+    app.use('/api/users/', router);
 };
 
 mongoose = require('mongoose');
@@ -22,7 +22,7 @@ router.post('/', function (req, res, next) {
             res.jerror(err); // pas très propre, peut donner des informations aux clients
             return; // ne pas oublier. Arrête l'execution de la fonction. Sinon express continue et crash.
         }
-        res.status(201).send(createdUser);
+        res.jsend(createdUser);
     });
 });
 
@@ -35,6 +35,6 @@ router.get('/', function (req, res, next) {
             res.jerror(err);
             return;
         }
-        res.send(users);
+        res.jsend(users);
     })
 });

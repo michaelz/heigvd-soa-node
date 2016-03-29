@@ -14,8 +14,8 @@
             }
             webix.ui(data.json(), $$("main"));
 
-            {{#if has_partial}}
-            {{> (lookup . 'pageid') }}
+            {{#if partial}}
+            {{> (lookup . 'partial') }}
             {{/if}}
     });
 </script>

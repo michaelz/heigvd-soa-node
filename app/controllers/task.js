@@ -1,25 +1,18 @@
 var express = require('express'),
     router = express.Router(),
+    config = require('../../config/config'),
     authMiddleware = require('../middlewares/authMiddleware'),
     http = require('http').Server(express),
     base64url = require('base64url'),
     io = require('socket.io')(http),
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    Task = mongoose.model('Task');
+    Task = mongoose.model('Task'),
+    socketioJwt = require('socketio-jwt');
 
 module.exports = function (app) {
-  app.use('/tasks/', router);
+  app.use('/api/tasks/', router);
 };
-
-router.get('/', function(req, res){
-    res.render('webix', {
-      title: 'Websocket Task list',
-      pageid: 'tasks',
-      has_partial: true,
-      has_websocket: true
-    });
-});
 
 /**
  * Add a new task
@@ -70,7 +63,7 @@ router.delete('/:id', authMiddleware.needsLogin, function (req, res, next) {
  * Get all tasks
  */
 
- router.get('/all', function(req, res, next) {
+ router.get('/', function(req, res, next) {
     Task.find().populate('user_id', 'username').exec(function (err, tasks) {
         if (err) {
           res.jerror(err);
@@ -88,12 +81,13 @@ router.delete('/:id', authMiddleware.needsLogin, function (req, res, next) {
     });
 });
 
+// TODO: uncomment and make the authorization handshake work.
+/*io.set('authorization', socketioJwt.authorize({
+    secret: config.secret,
+    handshake: true
+}));*/
 
 io.on('connection', function(socket) {
-   // TODO: Check token to authentify user.
-   // Send elements only to users with valid token.
-
-  //console.log('a user connected');
 
   socket.on('newtask', function(taskdesc) {
     io.emit('newtask', taskdesc);
@@ -104,9 +98,10 @@ io.on('connection', function(socket) {
   });
 
   socket.on('disconnect', function() {
-    //console.log('user disconnected');
+    console.log('user disconnected');
   });
 });
+
 
 // Websocket port (3000 is used for http, so 3001)
 http.listen(3001, function(){

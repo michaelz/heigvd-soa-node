@@ -11,7 +11,7 @@ var secret;
 require('express-jsend');
 
 module.exports = function (app) {
-    app.use('/auth/', router);
+    app.use('/api/auth/', router);
     secret = app.settings.secret;
 };
 

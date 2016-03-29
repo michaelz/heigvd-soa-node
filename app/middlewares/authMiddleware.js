@@ -11,9 +11,9 @@ var crypto = require('crypto'),
  * sent authentication token is invalid (or non are found).
  */
 module.exports.needsLogin = function (req, res, next) {
-    if ( req.get('Authorization') == 'null') {
+    if ( req.get('Authorization') == 'null' || !req.get('Authorization')) {
         console.log('Didn\'t get Authorization header');
-        if (!req.query.token) {
+        if (req.query.token == 'undefined'|| !req.query.token) {
             console.log('Didn\'t get token through query in url');
             res.jerror('no token');
             return;
@@ -22,7 +22,6 @@ module.exports.needsLogin = function (req, res, next) {
     } else {
         token = req.get('Authorization').split('.');
     }
-    console.log(authUtils.verifyToken(token));
     if (!authUtils.verifyToken(token)) {
         res.jerror('token fail');
         return;
@@ -66,6 +65,5 @@ module.exports.checkPassword = function (req, res, next) {
         res.jerror('Problem with login / password');
         return;
     }
-
     next();
 }

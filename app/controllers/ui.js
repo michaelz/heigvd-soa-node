@@ -10,9 +10,9 @@ module.exports = function (app) {
 };
 
 /*
- * Send tree view
+ * UI Builder for bookmark tree view
  */
-router.get('/bookmarks',authMiddleware.needsLogin, function (req, res, next) {
+router.get('/bookmarks', authMiddleware.needsLogin, function (req, res, next) {
     var payload = JSON.parse(base64url.decode(req.payload));
     var user;
     User.findById(payload.id, function (err, user) {
@@ -28,7 +28,7 @@ router.get('/bookmarks',authMiddleware.needsLogin, function (req, res, next) {
 });
 
 /**
- * Send login webix view
+ * UI Builder for login box
  */
 router.get('/login', function(req,res,next) {
     var response = {
@@ -45,13 +45,15 @@ router.get('/login', function(req,res,next) {
     res.send(response);
 });
 
-
+/**
+ * UI Builder for tasks
+ */
 router.get('/tasks',authMiddleware.needsLogin, function (req, res, next) {
     var payload = JSON.parse(base64url.decode(req.payload));
     var user;
     var delicon = "<span style='color:red; cursor:pointer' class='delbtn webix_icon fa-remove'></span>";
     var addicon = "<span style='color:green;' class='addicon webix_icon fa-plus-circle'></span>";
-    // TODO: Would be cool to have a status "TODO, WIP, DONE"
+    // Would be cool to have a status "TODO, WIP, DONE"
     var response = {
         rows:[
             {
@@ -63,7 +65,7 @@ router.get('/tasks',authMiddleware.needsLogin, function (req, res, next) {
                     { id:"delete", header:"",width:50, template:delicon}
         		],
         		autoheight:true,
-        		url: '/tasks/all',
+        		url: '/api/tasks',
                 borderless:true
             },
             {
@@ -93,53 +95,61 @@ router.get('/tasks',authMiddleware.needsLogin, function (req, res, next) {
     });
 });
 
-
+/**
+ * UI Builder for search
+ */
 router.get('/search', function(req, res, next) {
     var response = {
-        view:"list",
-        sizeToContent:true,
-        autowidth:true,
-        height:800,
-        type:{
-            height:"auto"
-        },
-        pager: {
-            size:15,
-            group: 10,
-            container: 'main-container'
-        },
-        tooltip:{
-            template:"by <em>#author#</em>"
-        },
-        template: "<h3 style='font-size:1.2em;line-height:1.4; margin:0'>#title#</h3><p style='font-size: 0.9em;line-height:1.3em'>#text#</p>",
-        //fillspace:true,
-        id:"search",
-        url: '/paragraphs/data'
+        rows: [
+            {
+                view: "form",
+                id:"search_form",
+                elements: [
+                    {
+                        view: "text",
+                        placeholder:"Enter search term(s)...",
+                        css:"searchInput",
+                        id:"searchInput"
+                    },
+                    {
+                        view: "button",
+                        id:"searchButton",
+                        label: "search",
+                        css: "searchButton"
+                    }
+                ]
+
+            },
+            {
+                view:"list",
+                id:"searchlist",
+                sizeToContent:true,
+                autowidth:true,
+                height:800,
+                type:{
+                    height:"auto"
+                },
+                pager: {
+                    template:"{common.prev()} {common.pages()} {common.next()}",
+                    size:15,
+                    group: 10,
+                    container: 'main-container'
+                },
+                tooltip:{
+                    template:"by <em>#author#</em><br>Full text: #text#"
+                },
+                template: "<h4 style='font-size:1.1em;line-height:1.2; margin:1em 0 0 0'>#title#</h4><p style='font-size: 0.9em;line-height:1.3em'>#shorttext#</p>",
+                //fillspace:true,
+                id:"search",
+                url: '/api/paragraphs'
+            }
+        ]
     };
+
     if (req.query.q) {
-        console.log('searched');
-        response.url = '/paragraphs/data?search=' + req.query.q;
-        response.title = 'Searching for <em>' + req.query.search + '</em>';
+        response.rows[1].url = '/api/paragraphs?search=' + req.query.q;
+        response.rows[1].tooltip.template = '"by <em>#author#</em>, Score : #score#"<br /> #text#'
     };
+
     res.send(response);
 });
-
-/*
-view:"list",
-sizeToContent:true,
-pager: {
-    size:15,
-    group: 10,
-    container: 'main-container'
-},
-tooltip:{
-    template:"by <em>#author#</em>"
-},
-autowidth:true,
-fixedRowHeight:false,  rowLineHeight:25, rowHeight:25,
-template: "first row <br /> second",
-autoheight:true,
-fillspace:true,
-id:"search",
-url: '/paragraphs/data'
-*/

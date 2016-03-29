@@ -1,0 +1,13 @@
+    // search stuff
+
+    var actualSearch;
+    if (getParameterByName('search')) {
+        actualSearch = getParameterByName('search');
+        $('.searchInput input').val(actualSearch);
+    };
+
+    $$("searchButton").attachEvent("onItemClick", function() {
+        var newSearch = $$("searchInput").getValue();
+        window.location.replace(updateQueryStringParameter(window.location.href, 'search', newSearch));
+        // TODO: Would be cool having that without refreshing the window. But the url should still change for referencing and saving pages. That's possible with Angular routes ...
+    });
